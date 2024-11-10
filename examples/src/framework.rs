@@ -6,7 +6,8 @@ use winit::{
     event::{Event, KeyEvent, StartCause, WindowEvent},
     event_loop::{EventLoop, EventLoopWindowTarget},
     keyboard::{Key, NamedKey},
-    window::Window,
+    monitor::VideoMode,
+    window::{Fullscreen, Window},
 };
 
 pub trait Example: 'static + Sized {
@@ -113,6 +114,7 @@ impl EventLoopWrapper {
             builder = builder.with_canvas(Some(canvas));
         }
         builder = builder.with_title(title);
+        builder = builder.with_fullscreen(Some(Fullscreen::Borderless(None)));
         let window = Arc::new(builder.build(&event_loop).unwrap());
 
         Self { event_loop, window }
