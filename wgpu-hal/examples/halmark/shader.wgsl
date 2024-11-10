@@ -47,7 +47,7 @@ var sam: sampler;
 @fragment
 fn fs_main(vertex: VertexOutput) -> @location(0) vec4<f32> {
     var fin = 0.0;
-    for (var i = 0u; i < 100u; i++) {
+    for (var i = 0u; i < 1000u; i++) {
         let proximity =
             max(0.0, distance(vec2<f32>(f32(i), 2.0), vec2<f32>(0.1, f32(i))));
         fin += proximity;
