@@ -46,5 +46,11 @@ var sam: sampler;
 
 @fragment
 fn fs_main(vertex: VertexOutput) -> @location(0) vec4<f32> {
-    return vertex.color * textureSampleLevel(tex, sam, vertex.tex_coords, 0.0);
+    var fin = 0.0;
+    for (var i = 0u; i < 5000u; i++) {
+        let proximity =
+            max(0.0, distance(vec2<f32>(f32(i), 2.0), vec2<f32>(0.1, f32(i))));
+        fin += proximity;
+    }
+    return vertex.color * textureSampleLevel(tex, sam, vertex.tex_coords, 0.0) * fin;
 }
