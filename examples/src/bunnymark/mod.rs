@@ -9,7 +9,7 @@ use winit::{
 
 const MAX_BUNNIES: usize = 1;
 const BUNNY_SIZE: f32 = 2560.0;
-const GRAVITY: f32 = -9.8 * 100.0;
+const GRAVITY: f32 = 0.0;
 const MAX_VELOCITY: f32 = 750.0;
 
 #[repr(C)]
