@@ -48,8 +48,8 @@ var sam: sampler;
 fn fs_main(vertex: VertexOutput) -> @location(0) vec4<f32> {
     var fin = 0.0;
     for (var i = 0u; i < 100u; i++) {
-        let proximity =
-            max(0.0, distance(vec2<f32>(f32(i*1000), 2.0), vec2<f32>(0.1, f32(i*1000)))) * sin(f32(i));
+    let proximity =
+            max(0.0, distance(vec4<f32>(f32(i*1000), 2.0, 0.0, 0.0), vec4<f32>(0.1, f32(i*1000), 0.0, 0.0)));
         fin += proximity;
     }
     return vertex.color * textureSample(tex, sam, vertex.tex_coords) * fin;
