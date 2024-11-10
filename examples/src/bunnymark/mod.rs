@@ -66,7 +66,7 @@ impl Example {
             self.bunnies.len() + spawn_count
         );
         for _ in 0..spawn_count {
-            let speed = self.rng.generate::<f32>() * MAX_VELOCITY - (MAX_VELOCITY * 0.5);
+            let speed = 0.0; //self.rng.generate::<f32>() * MAX_VELOCITY - (MAX_VELOCITY * 0.5);
             self.bunnies.push(Bunny {
                 position: [0.0, 0.5 * (self.extent[1] as f32)],
                 velocity: [speed, 0.0],
