@@ -7,8 +7,8 @@ use winit::{
     keyboard::{Key, NamedKey},
 };
 
-const MAX_BUNNIES: usize = 1 << 20;
-const BUNNY_SIZE: f32 = 0.15 * 256.0;
+const MAX_BUNNIES: usize = 1;
+const BUNNY_SIZE: f32 = 2560.0;
 const GRAVITY: f32 = -9.8 * 100.0;
 const MAX_VELOCITY: f32 = 750.0;
 
@@ -58,7 +58,7 @@ struct Example {
 
 impl Example {
     fn spawn_bunnies(&mut self) {
-        let spawn_count = 64;
+        let spawn_count = 1;
         let color = self.rng.generate::<u32>();
         println!(
             "Spawning {} bunnies, total at {}",

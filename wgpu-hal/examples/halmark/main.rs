@@ -18,7 +18,7 @@ use std::{
     time::Instant,
 };
 
-const MAX_BUNNIES: usize = 1 << 20;
+const MAX_BUNNIES: usize = 1;
 const BUNNY_SIZE: f32 = 0.15 * 256.0;
 const GRAVITY: f32 = -9.8 * 100.0;
 const MAX_VELOCITY: f32 = 750.0;
@@ -596,7 +596,7 @@ impl<A: hal::Api> Example<A> {
             ..
         } = event
         {
-            let spawn_count = 64 + self.bunnies.len() / 2;
+            let spawn_count = 1;
             let elapsed = self.start.elapsed();
             let color = elapsed.as_nanos() as u32;
             println!(
