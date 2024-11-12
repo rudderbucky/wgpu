@@ -803,21 +803,14 @@ impl<W: Write> Writer<W> {
         }
 
         self.loop_reachable_macro_name = self.namer.call("LOOP_IS_REACHABLE");
-        #[cfg(target_arch = "wasm32")]
-        {
-            let loop_reachable_volatile_name = self.namer.call("unpredictable_jump_over_loop");
-            writeln!(
-                self.out,
-                "#define {} if (volatile bool {} = true; {})",
-                self.loop_reachable_macro_name,
-                loop_reachable_volatile_name,
-                loop_reachable_volatile_name,
-            )?;
-        }
-        #[cfg(not(target_arch = "wasm32"))]
-        {
-            writeln!(self.out, "#define {}", self.loop_reachable_macro_name,)?;
-        }
+        let loop_reachable_volatile_name = self.namer.call("unpredictable_jump_over_loop");
+        writeln!(
+            self.out,
+            "#define {} if (volatile bool {} = true; {})",
+            self.loop_reachable_macro_name,
+            loop_reachable_volatile_name,
+            loop_reachable_volatile_name,
+        )?;
 
         Ok(())
     }
