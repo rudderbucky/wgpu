@@ -3028,7 +3028,10 @@ impl<W: Write> Writer<W> {
                     ref continuing,
                     break_if,
                 } => {
-                    self.emit_loop_reachable_macro()?;
+                    // We only emit the macro if the index policy is not checked.
+                    if context.expression.policies.index != index::BoundsCheckPolicy::Unchecked {
+                        self.emit_loop_reachable_macro()?;
+                    }
                     if !continuing.is_empty() || break_if.is_some() {
                         let gate_name = self.namer.call("loop_init");
                         writeln!(self.out, "{level}bool {gate_name} = true;")?;

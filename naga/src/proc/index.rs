@@ -67,6 +67,7 @@ pub enum BoundsCheckPolicy {
 pub struct BoundsCheckPolicies {
     /// How should the generated code handle array, vector, or matrix indices
     /// that are out of range?
+    /// On Metal, this policy also dictates how loops are checked for UB.
     #[cfg_attr(feature = "deserialize", serde(default))]
     pub index: BoundsCheckPolicy,
 
