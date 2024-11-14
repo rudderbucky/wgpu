@@ -1,4 +1,4 @@
-use crate::diagnostic_filter::FilterableTriggeringRule;
+use crate::diagnostic_filter::ConflictingDiagnosticRuleError;
 use crate::front::wgsl::parse::directive::enable_extension::{
     EnableExtension, UnimplementedEnableExtension,
 };
@@ -136,6 +136,8 @@ pub enum ExpectedToken<'a> {
     Variable,
     /// Access of a function
     Function,
+    /// The `diagnostic` identifier of the `@diagnostic(…)` attribute.
+    DiagnosticAttribute,
 }
 
 #[derive(Clone, Copy, Debug, Error, PartialEq)]
@@ -295,10 +297,21 @@ pub(crate) enum Error<'a> {
     DiagnosticInvalidSeverity {
         severity_control_name_span: Span,
     },
-    DiagnosticNotYetImplemented {
-        triggering_rule: FilterableTriggeringRule,
-        span: Span,
+    DiagnosticDuplicateTriggeringRule(ConflictingDiagnosticRuleError),
+    DiagnosticAttributeNotYetImplementedAtParseSite {
+        site_name_plural: &'static str,
+        spans: Vec<Span>,
     },
+    DiagnosticAttributeNotSupported {
+        on_what_plural: &'static str,
+        spans: Vec<Span>,
+    },
+}
+
+impl<'a> From<ConflictingDiagnosticRuleError> for Error<'a> {
+    fn from(value: ConflictingDiagnosticRuleError) -> Self {
+        Self::DiagnosticDuplicateTriggeringRule(value)
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -376,6 +389,9 @@ impl<'a> Error<'a> {
                     }
                     ExpectedToken::AfterIdentListComma => {
                         "next argument or end of list (';')".to_string()
+                    }
+                    ExpectedToken::DiagnosticAttribute => {
+                        "the 'diagnostic' attribute identifier".to_string()
                     }
                 };
                 ParseError {
@@ -1017,23 +1033,75 @@ impl<'a> Error<'a> {
                 )
                 .into()],
             },
-            Error::DiagnosticNotYetImplemented {
+            Error::DiagnosticDuplicateTriggeringRule(ConflictingDiagnosticRuleError {
                 triggering_rule,
-                span,
+                triggering_rule_spans,
+            }) => {
+                let [first_span, second_span] = triggering_rule_spans;
+                ParseError {
+                    message: format!(
+                        "found conflicting `diagnostic(…)` rule(s) for `{}`",
+                        triggering_rule.to_wgsl_ident()
+                    ),
+                    labels: vec![
+                        (first_span, "first rule".into()),
+                        (second_span, "second rule".into()),
+                    ],
+                    notes: vec![concat!(
+                        "multiple `diagnostic(…)` rules with the same rule name ",
+                        "conflict unless the severity is the same; ",
+                        "delete the rule you don't want, or ",
+                        "ensure that all severities with the same rule name match"
+                    )
+                    .into()],
+                }
+            }
+            Error::DiagnosticAttributeNotYetImplementedAtParseSite {
+                site_name_plural,
+                ref spans,
+            } => ParseError {
+                message: "`@diagnostic(…)` attribute(s) not yet implemented".into(),
+                labels: {
+                    let mut spans = spans.iter().cloned();
+                    let first = spans
+                        .next()
+                        .map(|span| {
+                            (
+                                span,
+                                format!("can't use this on {site_name_plural} (yet)").into(),
+                            )
+                        })
+                        .expect("internal error: diag. attr. rejection on empty map");
+                    std::iter::once(first)
+                        .chain(spans.map(|span| (span, "".into())))
+                        .collect()
+                },
+                notes: vec![format!(concat!(
+                    "Let Naga maintainers know that you ran into this at ",
+                    "<https://github.com/gfx-rs/wgpu/issues/5320>, ",
+                    "so they can prioritize it!"
+                ))],
+            },
+            Error::DiagnosticAttributeNotSupported {
+                on_what_plural,
+                ref spans,
             } => ParseError {
                 message: format!(
-                    "the `{}` diagnostic filter is not yet supported",
-                    triggering_rule.to_ident()
+                    "`@diagnostic(…)` attribute(s) on {on_what_plural} are not supported",
                 ),
-                labels: vec![(span, "".into())],
-                notes: vec![format!(
+                labels: spans
+                    .iter()
+                    .cloned()
+                    .map(|span| (span, "".into()))
+                    .collect(),
+                notes: vec![
                     concat!(
-                        "Let Naga maintainers know that you ran into this at ",
-                        "<https://github.com/gfx-rs/wgpu/issues/{}>, ",
-                        "so they can prioritize it!"
-                    ),
-                    triggering_rule.tracking_issue_num()
-                )],
+                        "`@diagnostic(…)` attributes are only permitted on `fn`s, ",
+                        "some statements, and `switch`/`loop` bodies."
+                    )
+                    .into(),
+                    "These attributes are well-formed, you likely just need to move them.".into(),
+                ],
             },
         }
     }
