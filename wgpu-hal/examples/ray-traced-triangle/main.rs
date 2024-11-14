@@ -400,6 +400,7 @@ impl<A: hal::Api> Example<A> {
                     entry_point: "main",
                     constants: &Default::default(),
                     zero_initialize_workgroup_memory: true,
+                    enable_loop_ub_checking: true,
                 },
                 cache: None,
             })

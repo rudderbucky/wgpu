@@ -150,6 +150,7 @@ impl super::Device {
                 binding_array: naga::proc::BoundsCheckPolicy::Unchecked,
             },
             zero_initialize_workgroup_memory: stage.zero_initialize_workgroup_memory,
+            enable_loop_ub_checking: stage.enable_loop_ub_checking,
         };
 
         let pipeline_options = naga::back::msl::PipelineOptions {

@@ -2138,6 +2138,9 @@ pub struct ProgrammableStage<'a, M: DynShaderModule + ?Sized> {
     /// This is required by the WebGPU spec, but may have overhead which can be avoided
     /// for cross-platform applications
     pub zero_initialize_workgroup_memory: bool,
+    /// Specifies whether shader loops are forcibly prevented from being optimized out, which may lead
+    /// to UB on Metal. Loop checking may have significant overhead.
+    pub enable_loop_ub_checking: bool,
 }
 
 impl<M: DynShaderModule + ?Sized> Clone for ProgrammableStage<'_, M> {
@@ -2147,6 +2150,7 @@ impl<M: DynShaderModule + ?Sized> Clone for ProgrammableStage<'_, M> {
             entry_point: self.entry_point,
             constants: self.constants,
             zero_initialize_workgroup_memory: self.zero_initialize_workgroup_memory,
+            enable_loop_ub_checking: self.enable_loop_ub_checking,
         }
     }
 }

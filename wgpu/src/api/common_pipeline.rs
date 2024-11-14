@@ -20,6 +20,9 @@ pub struct PipelineCompilationOptions<'a> {
     /// This is required by the WebGPU spec, but may have overhead which can be avoided
     /// for cross-platform applications
     pub zero_initialize_workgroup_memory: bool,
+    /// Specifies whether shader loops are forcibly prevented from being optimized out, which may lead
+    /// to UB on Metal. Loop checking may have significant overhead.
+    pub enable_loop_ub_checking: bool,
 }
 
 impl<'a> Default for PipelineCompilationOptions<'a> {
@@ -33,6 +36,7 @@ impl<'a> Default for PipelineCompilationOptions<'a> {
         Self {
             constants,
             zero_initialize_workgroup_memory: true,
+            enable_loop_ub_checking: true,
         }
     }
 }

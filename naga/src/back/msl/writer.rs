@@ -600,6 +600,9 @@ struct ExpressionContext<'a> {
     /// accesses. These may need to be cached in temporary variables. See
     /// `index::find_checked_indexes` for details.
     guarded_indices: HandleSet<crate::Expression>,
+    /// Specifies whether shader loops are forcibly prevented from being optimized out, which may lead
+    /// to UB on Metal. Loop checking may have significant overhead.
+    pub enable_loop_ub_checking: bool,
 }
 
 impl<'a> ExpressionContext<'a> {
@@ -3028,8 +3031,7 @@ impl<W: Write> Writer<W> {
                     ref continuing,
                     break_if,
                 } => {
-                    // We only emit the macro if the index policy is not checked.
-                    if context.expression.policies.index != index::BoundsCheckPolicy::Unchecked {
+                    if context.expression.enable_loop_ub_checking {
                         self.emit_loop_reachable_macro()?;
                     }
                     if !continuing.is_empty() || break_if.is_some() {
@@ -4868,6 +4870,7 @@ template <typename A>
                     module,
                     mod_info,
                     pipeline_options,
+                    enable_loop_ub_checking: options.enable_loop_ub_checking,
                 },
                 result_struct: None,
             };
@@ -5768,6 +5771,7 @@ template <typename A>
                     module,
                     mod_info,
                     pipeline_options,
+                    enable_loop_ub_checking: options.enable_loop_ub_checking,
                 },
                 result_struct: Some(&stage_out_name),
             };

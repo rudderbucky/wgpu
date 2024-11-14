@@ -146,6 +146,7 @@ impl<'a> ProgrammableStage<'a, dyn DynShaderModule> {
             entry_point: self.entry_point,
             constants: self.constants,
             zero_initialize_workgroup_memory: self.zero_initialize_workgroup_memory,
+            enable_loop_ub_checking: self.enable_loop_ub_checking,
         }
     }
 }

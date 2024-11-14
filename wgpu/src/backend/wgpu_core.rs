@@ -1092,6 +1092,10 @@ impl crate::Context for ContextWgpuCore {
                         .vertex
                         .compilation_options
                         .zero_initialize_workgroup_memory,
+                    enable_loop_ub_checking: desc
+                        .vertex
+                        .compilation_options
+                        .enable_loop_ub_checking,
                 },
                 buffers: Borrowed(&vertex_buffers),
             },
@@ -1106,6 +1110,7 @@ impl crate::Context for ContextWgpuCore {
                     zero_initialize_workgroup_memory: frag
                         .compilation_options
                         .zero_initialize_workgroup_memory,
+                    enable_loop_ub_checking: frag.compilation_options.enable_loop_ub_checking,
                 },
                 targets: Borrowed(frag.targets),
             }),
@@ -1150,6 +1155,7 @@ impl crate::Context for ContextWgpuCore {
                 zero_initialize_workgroup_memory: desc
                     .compilation_options
                     .zero_initialize_workgroup_memory,
+                enable_loop_ub_checking: desc.compilation_options.enable_loop_ub_checking,
             },
             cache: desc.cache.map(downcast_pipeline_cache).copied(),
         };

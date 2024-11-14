@@ -2829,6 +2829,7 @@ impl Device {
                 entry_point: final_entry_point_name.as_ref(),
                 constants: desc.stage.constants.as_ref(),
                 zero_initialize_workgroup_memory: desc.stage.zero_initialize_workgroup_memory,
+                enable_loop_ub_checking: desc.stage.enable_loop_ub_checking,
             },
             cache: cache.as_ref().map(|it| it.raw()),
         };
@@ -3250,6 +3251,7 @@ impl Device {
                 entry_point: &vertex_entry_point_name,
                 constants: stage_desc.constants.as_ref(),
                 zero_initialize_workgroup_memory: stage_desc.zero_initialize_workgroup_memory,
+                enable_loop_ub_checking: stage_desc.enable_loop_ub_checking,
             }
         };
 
@@ -3306,6 +3308,7 @@ impl Device {
                     zero_initialize_workgroup_memory: fragment_state
                         .stage
                         .zero_initialize_workgroup_memory,
+                    enable_loop_ub_checking: fragment_state.stage.enable_loop_ub_checking,
                 })
             }
             None => None,

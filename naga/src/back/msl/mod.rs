@@ -211,6 +211,8 @@ pub struct Options {
     pub bounds_check_policies: index::BoundsCheckPolicies,
     /// Should workgroup variables be zero initialized (by polyfilling)?
     pub zero_initialize_workgroup_memory: bool,
+    /// Specifies whether shader loops are forcibly prevented from being optimized out.
+    pub enable_loop_ub_checking: bool,
 }
 
 impl Default for Options {
@@ -223,6 +225,7 @@ impl Default for Options {
             fake_missing_bindings: true,
             bounds_check_policies: index::BoundsCheckPolicies::default(),
             zero_initialize_workgroup_memory: true,
+            enable_loop_ub_checking: true,
         }
     }
 }

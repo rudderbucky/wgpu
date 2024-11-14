@@ -1266,6 +1266,7 @@ impl Global {
                         .vertex
                         .stage
                         .zero_initialize_workgroup_memory,
+                    enable_loop_ub_checking: desc.vertex.stage.enable_loop_ub_checking,
                 };
                 ResolvedVertexState {
                     stage,
@@ -1294,6 +1295,7 @@ impl Global {
                         .vertex
                         .stage
                         .zero_initialize_workgroup_memory,
+                    enable_loop_ub_checking: desc.vertex.stage.enable_loop_ub_checking,
                 };
                 Some(ResolvedFragmentState {
                     stage,
@@ -1492,6 +1494,7 @@ impl Global {
                 entry_point: desc.stage.entry_point.clone(),
                 constants: desc.stage.constants.clone(),
                 zero_initialize_workgroup_memory: desc.stage.zero_initialize_workgroup_memory,
+                enable_loop_ub_checking: desc.stage.enable_loop_ub_checking,
             };
 
             let desc = ResolvedComputePipelineDescriptor {
